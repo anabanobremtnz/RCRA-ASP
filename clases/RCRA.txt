@@ -1,0 +1,18 @@
+RCRA
+--------------------------
+50% PRACTICAS
+50% TEORÍA (nota min 2.5/5)
+1/3 practicas de cabalar (no exame igual) con defensa --> copia!
+Answer Set Solving in Practice - bibliografia
+https://www.dc.fi.udc.es/~cabalar/kr/index.html
+
+automata estados luz diapo 9
+
+CLINGO
+python3 -m clingo
+pyhton3 -m pip install --user --upgrade clingo 
+asp - answer set programming (archivo.lp)
+:- "prohibido que..." --> :- p, q. % prohibido que p e q
+% "comentario de liña"
+{p;q;r}. "argumentos p,q,r"
+{s;p1}. ""
