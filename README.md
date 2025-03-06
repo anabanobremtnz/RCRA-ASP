@@ -1,5 +1,10 @@
 # Yin Yang Puzzle
 
+## TODO
+- [ ] Cambiar variables para non repetir o de negro para blanco.
+- [ ] Revisar encode.py para refacer manualmente.
+- [ ] Mirar por que da tantas solucións xa para o exemplo 02.
+
 Resolver puzzle Yin Yang utilizando **Clingo** (ASP). O obxectivo é colorear cada celda dunha cuadrícula \(N \times N\) con celdas negras e brancas cumplindo:
 
 1. Todas as celdas negras deben estar ortogonalmente conectadas.
