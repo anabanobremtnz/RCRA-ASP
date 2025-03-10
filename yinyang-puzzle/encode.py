@@ -49,9 +49,9 @@ def encode_file(infile, outfile):
                     if char == '.':
                         fout.write(f"cell({x},{y}).\n")
                     elif char == '0':
-                        fout.write(f"fixed({x},{y},white).\n")
-                    elif char == '1':
                         fout.write(f"fixed({x},{y},black).\n")
+                    elif char == '1':
+                        fout.write(f"fixed({x},{y},white).\n")
                     else:
                         print(f"Unexpected character '{char}' in file {infile} at position ({x},{y})")
     except Exception as e:
