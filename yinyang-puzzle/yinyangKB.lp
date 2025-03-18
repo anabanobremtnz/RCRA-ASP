@@ -57,14 +57,6 @@ reach_white(X,Y) :- root_white(X,Y).
 reach_white(X2,Y2) :- reach_white(X,Y), neighbor(X,Y,X2,Y2), w(X2,Y2).
 :- w(X,Y), not reach_white(X,Y).
 
-% Non pode haber bloques 2x2 dunha soa cor:
-:- fixed(X,Y,black), fixed(X+1,Y,black), fixed(X,Y+1,black), fixed(X+1,Y+1,black), X+1<=n, Y+1<=n.
-:- fixed(X,Y,white), fixed(X+1,Y,white), fixed(X,Y+1,white), fixed(X+1,Y+1,white), X+1<=n, Y+1<=n.
-
-% Non pode haber diagonais dunha soa cor:
-:- fixed(X,Y,black), fixed(X+1,Y+1,black), fixed(X,Y+1,white), fixed(X+1,Y,white), X+1<=n, Y+1<=n.
-:- fixed(X,Y,white), fixed(X+1,Y+1,white), fixed(X,Y+1,black), fixed(X+1,Y,black), X+1<=n, Y+1<=n.
-
 % ==================Saida==================
 % Saida: _drawcircle(X,Y,C)
 % En vez de números, saída de constantes simbólicas:
