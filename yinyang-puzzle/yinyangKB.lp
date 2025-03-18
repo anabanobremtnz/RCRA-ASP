@@ -20,12 +20,12 @@ w(X,Y) :- fixed(X,Y,white).
 :- position(X,Y), not b(X,Y), not w(X,Y).
 
 % Non pode haber bloques 2x2 dunha soa cor:
-:- fixed(X,Y,black), fixed(X+1,Y,black), fixed(X,Y+1,black), fixed(X+1,Y+1,black), X+1<=n, Y+1<=n.
-:- fixed(X,Y,white), fixed(X+1,Y,white), fixed(X,Y+1,white), fixed(X+1,Y+1,white), X+1<=n, Y+1<=n.
+:- b(X,Y), b(X+1,Y), b(X,Y+1), b(X+1,Y+1), X+1<=n, Y+1<=n.
+:- w(X,Y), w(X+1,Y), w(X,Y+1), w(X+1,Y+1), X+1<=n, Y+1<=n.
 
 % Non pode haber diagonais dunha soa cor:
-:- fixed(X,Y,black), fixed(X+1,Y+1,black), fixed(X,Y+1,white), fixed(X+1,Y,white), X+1<=n, Y+1<=n.
-:- fixed(X,Y,white), fixed(X+1,Y+1,white), fixed(X,Y+1,black), fixed(X+1,Y,black), X+1<=n, Y+1<=n.
+:- b(X,Y), b(X+1,Y+1), w(X,Y+1), w(X+1,Y), X+1<=n, Y+1<=n.
+:- w(X,Y), w(X+1,Y+1), b(X,Y+1), b(X+1,Y), X+1<=n, Y+1<=n.
 
 % ==================Conectividad==================
 % Peche transitivo - Veciños: orthogonal (up, down, left, right) polo grid
