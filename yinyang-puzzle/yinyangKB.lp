@@ -28,34 +28,30 @@ w(X,Y) :- fixed(X,Y,white).
 :- w(X,Y), w(X+1,Y+1), b(X,Y+1), b(X+1,Y), X+1<=n, Y+1<=n.
 
 % ==================Conectividad==================
-% Peche transitivo - Veciños: orthogonal (up, down, left, right) polo grid
-neighbor(X,Y,X-1,Y) :- position(X,Y), X>=1.
-neighbor(X,Y,X+1,Y) :- position(X,Y), X<n.
-neighbor(X,Y,X,Y-1) :- position(X,Y), Y>=1.
-neighbor(X,Y,X,Y+1) :- position(X,Y), Y<n.
+% Adyacencia en 4 direcciones
+adj(X,Y,X+1,Y) :- position(X,Y), position(X+1,Y).
+adj(X,Y,X-1,Y) :- position(X,Y), position(X-1,Y).
+adj(X,Y,X,Y+1) :- position(X,Y), position(X,Y+1).
+adj(X,Y,X,Y-1) :- position(X,Y), position(X,Y-1).
 
-% Para as negras:
-% Raiz fixa para as casillas negras.
-% A raiz escollida e a celda negra fixa coas menores coordenadas.
-root_black(X,Y) :- fixed(X,Y,black), not smaller_black(X,Y).
-smaller_black(X,Y) :- fixed(X,Y,black), fixed(X1,Y1,black), X1 < X.
-smaller_black(X,Y) :- fixed(X,Y,black), fixed(X1,Y1,black), X1 = X, Y1 < Y.
+% Propagar conectividad dentro de cada clase (corrección del error)
+connected_black(X,Y) :- b(X,Y).
+connected_white(X,Y) :- w(X,Y).
 
-% Se unha celda negra é alcanzable desde a raiz, entón todas as súas veciñas tamén son negras.
-reach_black(X,Y) :- root_black(X,Y).
-reach_black(X2,Y2) :- reach_black(X,Y), neighbor(X,Y,X2,Y2), b(X2,Y2).
-:- b(X,Y), not reach_black(X,Y).
+% Un pixel está conectado a otro si hay adyacencia dentro de su color
+connected_black(X2,Y2) :- connected_black(X1,Y1), adj(X1,Y1,X2,Y2), b(X2,Y2).
+connected_white(X2,Y2) :- connected_white(X1,Y1), adj(X1,Y1,X2,Y2), w(X2,Y2).
 
-% Para as brancas:
-% Designamos unha raiz entre as celdas brancas fixas (a menor en orde lexicográfica).
-root_white(X,Y) :- fixed(X,Y,white), not smaller_white(X,Y).
-smaller_white(X,Y) :- fixed(X,Y,white), fixed(X1,Y1,white), X1 < X.
-smaller_white(X,Y) :- fixed(X,Y,white), fixed(X1,Y1,white), X1 = X, Y1 < Y.
+% Contamos componentes conectadas
+component_black(X,Y,ID) :- connected_black(X,Y), ID = #min{X1,Y1 : connected_black(X1,Y1)}.
+component_white(X,Y,ID) :- connected_white(X,Y), ID = #min{X1,Y1 : connected_white(X1,Y1)}.
 
-% Se unha celda branca é alcanzable desde a raiz, entón todas as súas veciñas tamén son brancas.
-reach_white(X,Y) :- root_white(X,Y).
-reach_white(X2,Y2) :- reach_white(X,Y), neighbor(X,Y,X2,Y2), w(X2,Y2).
-:- w(X,Y), not reach_white(X,Y).
+component_count(black, N) :- N = #count{ID : component_black(_,_,ID)}.
+component_count(white, N) :- N = #count{ID : component_white(_,_,ID)}.
+
+% Restricción: cada color debe ter só unha compoñente conectada
+:- component_count(black, N), N > 1.
+:- component_count(white, N), N > 1.
 
 % ==================Saida==================
 % Saida: _drawcircle(X,Y,C)
