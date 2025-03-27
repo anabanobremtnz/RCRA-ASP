@@ -9,8 +9,8 @@ position(X,Y) :- fixed(X,Y,_).
 b(X,Y) :- fixed(X,Y,black).
 w(X,Y) :- fixed(X,Y,white).
 
-% Se non, eliximos entre branca e negra.
-{b(X,Y); w(X,Y)} :- position(X,Y), not fixed(X,Y,_).
+% Se non, eliximos entre branca e negra, pero só unha vez
+1 { b(X,Y); w(X,Y) } 1 :- position(X,Y), not fixed(X,Y,_).
 
 % ==================Restriccións=================
 % Cada celda debe ser negra o branca
@@ -33,8 +33,22 @@ adj(X,Y,X,Y-1) :- position(X,Y), position(X,Y-1), Y-1>=1.
 
 % ==================Conectividad Global==================
 % Seleccionar un punto de inicio para cada color
-1 { start_w(X,Y) : w(X,Y) } 1.
-1 { start_b(X,Y) : b(X,Y) } 1.
+min_white(X,Y) :- w(X,Y), not smaller_white(X,Y).
+smaller_white(X,Y) :- w(X,Y), w(X1,Y1), X1 < X.
+smaller_white(X,Y) :- w(X,Y), w(X1,Y1), X1 = X, Y1 < Y.
+
+min_black(X,Y) :- b(X,Y), not smaller_black(X,Y).
+smaller_black(X,Y) :- b(X,Y), b(X1,Y1), X1 < X.
+smaller_black(X,Y) :- b(X,Y), b(X1,Y1), X1 = X, Y1 < Y.
+
+start_w(X,Y) :- min_white(X,Y).
+start_b(X,Y) :- min_black(X,Y).
+
+% Ensure there is exactly one lexicographically smallest white cell if white cells exist
+:- { start_w(X,Y) } != 1, { w(X,Y) } > 0.
+
+% Ensure there is exactly one lexicographically smallest black cell if black cells exist
+:- { start_b(X,Y) } != 1, { b(X,Y) } > 0.
 
 % Inicializar celdas alcanzables
 reached_w(X,Y) :- start_w(X,Y).
