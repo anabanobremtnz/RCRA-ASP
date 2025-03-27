@@ -27,9 +27,9 @@ w(X,Y) :- fixed(X,Y,white).
 % ==================Conectividad==================
 % Adyacencia en 4 direcciones
 adj(X,Y,X+1,Y) :- position(X,Y), position(X+1,Y), X+1<=n.
-adj(X,Y,X-1,Y) :- position(X,Y), position(X-1,Y), X-1>=1.
+adj(X,Y,X-1,Y) :- position(X,Y), position(X-1,Y), X-1>=0. %NOTA: Si se reduce el tamaño de adjacencia a a X-1>=1, se puede obtener una solución más rápida en ciertos casos(algunos casos da insatisfacción)
 adj(X,Y,X,Y+1) :- position(X,Y), position(X,Y+1), Y+1<=n.
-adj(X,Y,X,Y-1) :- position(X,Y), position(X,Y-1), Y-1>=1.
+adj(X,Y,X,Y-1) :- position(X,Y), position(X,Y-1), Y-1>=0. %NOTA: Si se reduce el tamaño de adjacencia a a Y-1>=1, se puede obtener una solución más rápida en ciertos casos(algunos casos da insatisfacción)
 
 % ==================Conectividad Global==================
 % Seleccionar un punto de inicio para cada color
