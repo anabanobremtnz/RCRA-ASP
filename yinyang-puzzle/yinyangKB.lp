@@ -2,12 +2,10 @@
 gridsize(n).
 
 % ==================Dominio==================
-% As posicións son celdas sen cor (cell) ou con cor (fixed).
 position(X,Y) :- cell(X,Y).
 position(X,Y) :- fixed(X,Y,_).
 
 % ==================Asignación de cores==================
-% Se unha celda está fixa, asignamoslle a cor correspondente.
 b(X,Y) :- fixed(X,Y,black).
 w(X,Y) :- fixed(X,Y,white).
 
@@ -15,7 +13,6 @@ w(X,Y) :- fixed(X,Y,white).
 {b(X,Y); w(X,Y)} :- position(X,Y), not fixed(X,Y,_).
 
 % ==================Restriccións=================
-% Forzamos a que tome un e solo un cor e que non quede sin asignar
 % Cada celda debe ser negra o branca
 :- position(X,Y), not b(X,Y), not w(X,Y).
 
@@ -29,37 +26,29 @@ w(X,Y) :- fixed(X,Y,white).
 
 % ==================Conectividad==================
 % Adyacencia en 4 direcciones
-adj(X,Y,X+1,Y) :- position(X,Y), position(X+1,Y).
-adj(X,Y,X-1,Y) :- position(X,Y), position(X-1,Y).
-adj(X,Y,X,Y+1) :- position(X,Y), position(X,Y+1).
-adj(X,Y,X,Y-1) :- position(X,Y), position(X,Y-1).
+adj(X,Y,X+1,Y) :- position(X,Y), position(X+1,Y), X+1<=n.
+adj(X,Y,X-1,Y) :- position(X,Y), position(X-1,Y), X-1>=1.
+adj(X,Y,X,Y+1) :- position(X,Y), position(X,Y+1), Y+1<=n.
+adj(X,Y,X,Y-1) :- position(X,Y), position(X,Y-1), Y-1>=1.
 
-% Propagar conectividad dentro de cada clase (corrección del error)
-connected_black(X,Y) :- b(X,Y).
-connected_white(X,Y) :- w(X,Y).
+% ==================Conectividad Global==================
+% Seleccionar un punto de inicio para cada color
+1 { start_w(X,Y) : w(X,Y) } 1.
+1 { start_b(X,Y) : b(X,Y) } 1.
 
-% Un pixel está conectado a otro si hay adyacencia dentro de su color
-connected_black(X2,Y2) :- connected_black(X1,Y1), adj(X1,Y1,X2,Y2), b(X2,Y2).
-connected_white(X2,Y2) :- connected_white(X1,Y1), adj(X1,Y1,X2,Y2), w(X2,Y2).
+% Inicializar celdas alcanzables
+reached_w(X,Y) :- start_w(X,Y).
+reached_b(X,Y) :- start_b(X,Y).
 
-% Contamos componentes conectadas
-component_black(X,Y,ID) :- connected_black(X,Y), ID = #min{X1,Y1 : connected_black(X1,Y1)}.
-component_white(X,Y,ID) :- connected_white(X,Y), ID = #min{X1,Y1 : connected_white(X1,Y1)}.
+% Propagar alcanzabilidad
+reached_w(X2,Y2) :- reached_w(X1,Y1), adj(X1,Y1,X2,Y2), w(X2,Y2).
+reached_b(X2,Y2) :- reached_b(X1,Y1), adj(X1,Y1,X2,Y2), b(X2,Y2).
 
-component_count(black, N) :- N = #count{ID : component_black(_,_,ID)}.
-component_count(white, N) :- N = #count{ID : component_white(_,_,ID)}.
-
-% Restricción: cada color debe ter só unha compoñente conectada
-:- component_count(black, N), N > 1.
-:- component_count(white, N), N > 1.
+% Restricción: Todas las celdas del mismo color deben ser alcanzables
+:- w(X,Y), not reached_w(X,Y).
+:- b(X,Y), not reached_b(X,Y).
 
 % ==================Saida==================
-% Saida: _drawcircle(X,Y,C)
-% En vez de números, saída de constantes simbólicas:
-%   - _drawcircle(X,Y,black) para unha celda negra
-%   - _drawcircle(X,Y,white) para unha celda branca
-% (decode.py imprimirá 0 se C=black, e 1 se C=white.)
-
 _drawcircle(X,Y,black) :- b(X,Y).
 _drawcircle(X,Y,white) :- w(X,Y).
 
