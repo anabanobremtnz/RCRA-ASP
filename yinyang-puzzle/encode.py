@@ -1,24 +1,13 @@
-#!/usr/bin/env python3
+"""
+AUTHORS: Samuel Otero Agraso (s.agraso) and Ana Bañobre Martinez (ana.banobre)
+
+python3 encode.py domXX.txt domXX.lp
+"""
 import sys
 import os
 import glob
 
-"""
-python3 encode.py dom02.txt dom02.lp
-"""
-
 def encode_file(infile, outfile):
-    """
-    Reads an ASCII domain file (e.g., dom02.txt) and writes an ASP file (e.g., dom02.lp)
-    containing only facts and constants.
-    
-    The input file is assumed to be an n x n grid. Each line should have n characters:
-      - '.' represents a cell with no fixed assignment (will be encoded as cell(X,Y).)
-      - '0' represents a white fixed cell (encoded as fixed(X,Y,white).)
-      - '1' represents a black fixed cell (encoded as fixed(X,Y,black).)
-    
-    Coordinates are 0-indexed, with X being the column and Y the row.
-    """
     try:
         with open(infile, 'r') as fin:
             # Read non-empty lines (strip newline characters)
@@ -27,21 +16,10 @@ def encode_file(infile, outfile):
         print(f"Error reading file {infile}: {e}")
         return
 
-    # Determine grid size from the number of lines.
     n = len(lines)
-    if n == 0:
-        print(f"Warning: File {infile} is empty.")
-        return
-
-    # Assume all lines are of equal length (grid is square)
-    num_cols = len(lines[0])
-    if num_cols != n:
-        print(f"Warning: File {infile} is not square ({n} rows vs {num_cols} columns).")
-    # We'll use n as the grid size (assuming an n x n puzzle)
-
+    
     try:
         with open(outfile, 'w') as fout:
-            # Write grid size fact
             fout.write(f"gridsize({n}).\n")
             # Process each cell
             for y, line in enumerate(lines):
@@ -60,14 +38,12 @@ def encode_file(infile, outfile):
 def main():
     args = sys.argv[1:]
     if len(args) == 2:
-        # Single file mode: encode one input file to one output file.
         infile, outfile = args
         if not os.path.isfile(infile):
             print(f"Input file {infile} does not exist.")
             sys.exit(1)
         encode_file(infile, outfile)
     elif len(args) == 1:
-        # Directory mode: process all files matching "dom*.txt" in the given directory.
         directory = args[0]
         if not os.path.isdir(directory):
             print(f"{directory} is not a directory.")
@@ -84,9 +60,7 @@ def main():
             encode_file(infile, outfile)
     else:
         print("Usage:")
-        print("  python3 encode.py <input_file> <output_file>")
-        print("or")
-        print("  python3 encode.py <directory>")
+        print("python3 encode.py <directory>")
         sys.exit(1)
 
 if __name__ == "__main__":

@@ -1,10 +1,6 @@
 import clingo
 import sys
 
-"""
-python3 decode.py yinyangKB.lp dom02.lp sol02.txt
-"""
-
 ### Main program
 
 if len(sys.argv)<4:
