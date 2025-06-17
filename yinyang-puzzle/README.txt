@@ -8,3 +8,6 @@ python3 decode.py yinyangKB.lp domXX.lp solXX.txt
 
 Errores:
 Para los ejemplos 6, 8 y 11 no encuentra un único modelo o no encuentra ningún modelo en poco tiempo.
+
+ATENCION:
+¡Archivo decode.py cambiado! Tablero traspuesto --> corregir
